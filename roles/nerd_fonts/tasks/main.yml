@@ -1,0 +1,6 @@
+- name: Install Nerd Fonts
+  ansible.builtin.include_tasks:
+    file: font.yml
+  loop: "{{ nerd_fonts }}"
+  loop_control:
+    loop_var: nerd_fonts_font

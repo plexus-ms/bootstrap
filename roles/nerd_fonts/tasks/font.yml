@@ -1,0 +1,31 @@
+- name: Check for the {{ nerd_fonts_font }} Nerd Font
+  ansible.builtin.stat:
+    path: "{{ nerd_fonts_dir }}/{{ nerd_fonts_font }}"
+  register: nerd_fonts_installed
+
+# A failed download removes the directory again, so the next run retries
+# instead of skipping a half-installed font.
+- name: Install the {{ nerd_fonts_font }} Nerd Font
+  when: not nerd_fonts_installed.stat.exists
+  block:
+    - name: Create the directory for {{ nerd_fonts_font }}
+      ansible.builtin.file:
+        path: "{{ nerd_fonts_dir }}/{{ nerd_fonts_font }}"
+        state: directory
+        mode: "0755"
+
+    - name: Download and unpack {{ nerd_fonts_font }}
+      ansible.builtin.unarchive:
+        src: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ nerd_fonts_font }}.tar.xz"
+        dest: "{{ nerd_fonts_dir }}/{{ nerd_fonts_font }}"
+        remote_src: true
+      notify: Rebuild the font cache
+  rescue:
+    - name: Remove the incomplete {{ nerd_fonts_font }} directory
+      ansible.builtin.file:
+        path: "{{ nerd_fonts_dir }}/{{ nerd_fonts_font }}"
+        state: absent
+
+    - name: Report the failed {{ nerd_fonts_font }} install
+      ansible.builtin.fail:
+        msg: "Installing the {{ nerd_fonts_font }} Nerd Font failed: {{ ansible_failed_result.msg | default('unknown error') }}"

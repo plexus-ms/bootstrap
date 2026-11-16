@@ -1,0 +1,18 @@
+argument_specs:
+  main:
+    short_description: Install Nerd Fonts for the user running the play.
+    description:
+      - >-
+        Downloads each font's latest release from github.com/ryanoasis/nerd-fonts
+        into C(~/.local/share/fonts/NerdFonts/<name>) and rebuilds the font cache.
+      - >-
+        A font is installed once and never updated. To update one, delete its
+        directory and run the play again.
+    options:
+      nerd_fonts:
+        type: list
+        elements: str
+        default: []
+        description: >-
+          Fonts to install, named like their release archives, such as
+          C(JetBrainsMono) or C(FiraCode).

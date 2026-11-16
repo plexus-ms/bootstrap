@@ -1,0 +1,1 @@
+nerd_fonts_dir: "{{ ansible_facts.user_dir }}/.local/share/fonts/NerdFonts"
