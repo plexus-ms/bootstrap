@@ -1,0 +1,10 @@
+namespace: plexus
+name: bootstrap
+version: 1.0.0
+readme: README.md
+authors:
+  - David Julian Albers
+description: Take a fresh Ubuntu machine to dev-ready.
+license_file: LICENSE
+repository: https://github.com/plexus-ms/bootstrap
+tags: [plexus, bootstrap, ubuntu]

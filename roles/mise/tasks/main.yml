@@ -1,0 +1,9 @@
+# mise installs into the home directory of the user running the play and
+# updates itself afterwards with `mise self-update`.
+- name: Install mise
+  ansible.builtin.include_role:
+    name: plexus.bootstrap.install_script
+  vars:
+    install_script_name: mise
+    install_script_url: https://mise.run
+    install_script_creates: "{{ ansible_facts.user_dir }}/.local/bin/mise"

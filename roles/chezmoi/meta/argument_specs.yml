@@ -1,0 +1,16 @@
+argument_specs:
+  main:
+    short_description: Install chezmoi and clone a dotfiles repository.
+    description:
+      - Clones and pulls the dotfiles for the user running the play.
+      - >-
+        Never applies them. If the home directory differs from the repository,
+        the play prints the differing files and reminds you to run
+        C(chezmoi apply).
+    options:
+      chezmoi_repo:
+        type: str
+        required: true
+        description: >-
+          Dotfiles repository, in any form C(chezmoi init) accepts, such as
+          C(user), C(user/repo) or a full URL.

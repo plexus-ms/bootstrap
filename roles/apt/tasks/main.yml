@@ -1,0 +1,11 @@
+- name: Add third-party repositories
+  ansible.builtin.include_tasks:
+    file: "repositories/{{ item }}.yml"
+  loop: "{{ apt_repositories }}"
+
+- name: Install packages
+  ansible.builtin.apt:
+    name: "{{ apt_packages }}"
+    state: present
+    update_cache: true
+  become: true

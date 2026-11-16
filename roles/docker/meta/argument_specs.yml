@@ -1,0 +1,11 @@
+argument_specs:
+  main:
+    short_description: Install Docker Engine and let a user run docker without sudo.
+    description:
+      - Adds Docker's apt repository and installs Docker Engine through the apt role.
+    options:
+      docker_user:
+        type: str
+        description: >-
+          User added to the docker group. Defaults to the user running the
+          play. Takes effect at next login.

@@ -1,0 +1,37 @@
+# chezmoi installs into ~/.local/bin of the user running the play and upgrades
+# itself with `chezmoi upgrade`. That directory may not be on PATH yet during
+# the first run, so the tasks below call chezmoi by its full path.
+- name: Install chezmoi
+  ansible.builtin.include_role:
+    name: plexus.bootstrap.install_script
+  vars:
+    install_script_name: chezmoi
+    install_script_url: https://get.chezmoi.io
+    install_script_args: [-b, "{{ chezmoi_bindir }}"]
+    install_script_creates: "{{ chezmoi_bin }}"
+
+- name: Clone the dotfiles repository
+  ansible.builtin.command:
+    argv: ["{{ chezmoi_bin }}", init, "{{ chezmoi_repo }}"]
+    creates: "{{ chezmoi_source }}/.git"
+
+- name: Pull the latest dotfiles
+  ansible.builtin.command:
+    argv: ["{{ chezmoi_bin }}", git, --, pull, --ff-only]
+  register: chezmoi_pull
+  changed_when: "'Already up to date' not in chezmoi_pull.stdout"
+
+- name: Compare the dotfiles with the home directory
+  ansible.builtin.command:
+    argv: ["{{ chezmoi_bin }}", status]
+  register: chezmoi_status
+  changed_when: false
+
+# Applying is left to the user, so local edits are never overwritten unseen.
+- name: Remind to apply the dotfiles
+  ansible.builtin.debug:
+    msg:
+      - "Your home directory differs from the dotfiles repository:"
+      - "{{ chezmoi_status.stdout_lines }}"
+      - "Review the changes with '{{ chezmoi_bin }} diff', then apply them with '{{ chezmoi_bin }} apply'."
+  when: chezmoi_status.stdout | length > 0

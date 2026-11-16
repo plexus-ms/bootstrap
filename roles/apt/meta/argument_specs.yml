@@ -1,0 +1,25 @@
+argument_specs:
+  main:
+    short_description: Add third-party apt repositories and install packages.
+    description:
+      - Adds the repositories first, then installs all packages in one transaction.
+      - >-
+        Repositories and packages are independent. A package from a third-party
+        repository only installs if that repository is listed too.
+    options:
+      apt_repositories:
+        type: list
+        elements: str
+        default: []
+        choices:
+          - 1password
+          - docker
+          - github-cli
+        description: >-
+          Third-party repositories to add. Each name is a task file in
+          C(tasks/repositories/).
+      apt_packages:
+        type: list
+        elements: str
+        default: []
+        description: Packages to install, from Debian or any added repository.

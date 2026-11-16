@@ -1,0 +1,11 @@
+- name: Install zsh
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+  become: true
+
+- name: Make zsh the login shell of {{ zsh_user }}
+  ansible.builtin.user:
+    name: "{{ zsh_user }}"
+    shell: /usr/bin/zsh
+  become: true

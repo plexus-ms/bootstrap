@@ -1,0 +1,9 @@
+# Zed installs into ~/.local/zed.app of the user running the play, links
+# ~/.local/bin/zed and adds a desktop entry. It updates itself afterwards.
+- name: Install Zed
+  ansible.builtin.include_role:
+    name: plexus.bootstrap.install_script
+  vars:
+    install_script_name: Zed
+    install_script_url: https://zed.dev/install.sh
+    install_script_creates: "{{ ansible_facts.user_dir }}/.local/zed.app/bin/zed"

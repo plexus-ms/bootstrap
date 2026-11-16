@@ -1,0 +1,33 @@
+argument_specs:
+  main:
+    short_description: Run a vendor install script if the program it installs is missing.
+    description:
+      - >-
+        Meant for tools that install into the home directory and update
+        themselves. The script runs only when O(install_script_creates) does
+        not exist, so later runs change nothing and leave updates to the tool.
+      - >-
+        The script runs as the user running the play. It is downloaded to a
+        temporary file and removed afterwards; it is never piped into a shell.
+    options:
+      install_script_name:
+        type: str
+        required: true
+        description: Name of the program, used in task names.
+      install_script_url:
+        type: str
+        required: true
+        description: URL of the install script.
+      install_script_creates:
+        type: path
+        required: true
+        description: File the script creates. Its presence skips the script.
+      install_script_interpreter:
+        type: str
+        default: sh
+        description: Shell that runs the script, such as C(sh) or C(bash).
+      install_script_args:
+        type: list
+        elements: str
+        default: []
+        description: Arguments passed to the script.

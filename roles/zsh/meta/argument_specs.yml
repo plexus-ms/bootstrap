@@ -1,0 +1,7 @@
+argument_specs:
+  main:
+    short_description: Install zsh and make it a user's login shell.
+    options:
+      zsh_user:
+        type: str
+        description: User whose login shell is set. Defaults to the user running the play.

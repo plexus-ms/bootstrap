@@ -1,0 +1,8 @@
+- name: Install Claude Code
+  ansible.builtin.include_role:
+    name: plexus.bootstrap.install_script
+  vars:
+    install_script_name: Claude Code
+    install_script_url: https://claude.ai/install.sh
+    install_script_interpreter: bash
+    install_script_creates: "{{ ansible_facts.user_dir }}/.local/bin/claude"

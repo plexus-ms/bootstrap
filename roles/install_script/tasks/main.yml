@@ -1,0 +1,30 @@
+- name: Check for {{ install_script_name }}
+  ansible.builtin.stat:
+    path: "{{ install_script_creates }}"
+  register: install_script_target
+
+- name: Install {{ install_script_name }}
+  when: not install_script_target.stat.exists
+  block:
+    - name: Create a temporary file for the {{ install_script_name }} installer
+      ansible.builtin.tempfile:
+        suffix: .sh
+      register: install_script_file
+
+    - name: Download the {{ install_script_name }} installer
+      ansible.builtin.get_url:
+        url: "{{ install_script_url }}"
+        dest: "{{ install_script_file.path }}"
+        mode: "0700"
+        force: true
+
+    - name: Run the {{ install_script_name }} installer
+      ansible.builtin.command:
+        argv: "{{ [install_script_interpreter, install_script_file.path] + install_script_args }}"
+        creates: "{{ install_script_creates }}"
+  always:
+    - name: Remove the {{ install_script_name }} installer
+      ansible.builtin.file:
+        path: "{{ install_script_file.path }}"
+        state: absent
+      when: install_script_file.path is defined
