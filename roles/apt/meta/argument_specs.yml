@@ -15,6 +15,7 @@ argument_specs:
           - 1password
           - docker
           - github-cli
+          - vivaldi
         description: >-
           Third-party repositories to add. Each name is a task file in
           C(tasks/repositories/).

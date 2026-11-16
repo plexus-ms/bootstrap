@@ -1,0 +1,19 @@
+# The vivaldi-stable package writes /etc/apt/sources.list.d/vivaldi.sources
+# itself and rewrites it on every upgrade, with its own bundled signing key.
+# The source is only added under that name while it is missing, so the package
+# takes it over on install and later runs leave it alone.
+- name: Check for the Vivaldi apt repository
+  ansible.builtin.stat:
+    path: /etc/apt/sources.list.d/vivaldi.sources
+  register: apt_vivaldi_source
+
+- name: Add the Vivaldi apt repository
+  ansible.builtin.deb822_repository:
+    name: vivaldi
+    uris: https://repo.vivaldi.com/stable/deb/
+    suites: stable
+    components: main
+    architectures: "{{ apt_arch }}"
+    signed_by: https://repo.vivaldi.com/stable/linux_signing_key.pub
+  become: true
+  when: not apt_vivaldi_source.stat.exists
