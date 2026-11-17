@@ -1,1 +1,8 @@
 apt_arch: "{{ {'x86_64': 'amd64', 'aarch64': 'arm64'}[ansible_facts.architecture] }}"
+
+# The host each repository is served from, for unattended-upgrades' site= match.
+apt_repository_sites:
+  1password: downloads.1password.com
+  docker: download.docker.com
+  github-cli: cli.github.com
+  vivaldi: repo.vivaldi.com

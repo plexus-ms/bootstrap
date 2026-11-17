@@ -24,3 +24,12 @@ argument_specs:
         elements: str
         default: []
         description: Packages to install, from Debian or any added repository.
+      apt_unattended_upgrades:
+        type: bool
+        default: true
+        description: >-
+          Let unattended-upgrades upgrade the repositories in C(apt_repositories),
+          through a file C(/etc/apt/apt.conf.d/53-unattended-upgrades-<repo>) each.
+          Ubuntu runs unattended-upgrades by default, so this applies even
+          without the upgrades role. False removes those files again. Applies
+          only to the repositories of this role call.

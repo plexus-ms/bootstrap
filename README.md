@@ -56,3 +56,19 @@ ansible-playbook bootstrap/playbook.yml --ask-become-pass
 
 Run the playbook as your normal user, not as root. Roles escalate with `sudo` only
 for the tasks that need it, and install per-user tools for the user running the play.
+
+## Unattended upgrades
+
+Ubuntu installs security upgrades unattended out of the box. The `apt` role
+extends that to the third-party repositories it adds: each one gets a file
+`/etc/apt/apt.conf.d/53-unattended-upgrades-<repo>`. Set
+`apt_unattended_upgrades: false` on a role call to leave its repositories to
+manual upgrades instead; for Docker, set `docker_unattended_upgrades: false`.
+
+The `upgrades` role also upgrades Ubuntu's `-updates` pocket, makes sure the
+daily runs are on and cleans the package cache weekly. It never reboots: a
+kernel upgrade waits for the next restart.
+
+```yaml
+    - role: plexus.bootstrap.upgrades
+```

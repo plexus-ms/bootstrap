@@ -1,0 +1,14 @@
+argument_specs:
+  main:
+    short_description: Install upgrades unattended, every day.
+    description:
+      - >-
+        Keeps Ubuntu's defaults (release and security pockets, daily timers that
+        catch up at boot) and adds the C(-updates) pocket.
+      - >-
+        Third-party repositories added by the apt role are upgraded too, unless
+        that role ran with C(apt_unattended_upgrades=false).
+      - >-
+        Never reboots by itself. A kernel or libc upgrade waits for the next
+        restart, which GNOME asks for.
+    options: {}

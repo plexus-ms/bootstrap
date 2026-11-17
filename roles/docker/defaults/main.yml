@@ -1,3 +1,4 @@
 # lookup, not ansible_facts: argument validation runs even when tags skip the role,
 # and then facts may not have been gathered.
 docker_user: "{{ lookup('env', 'USER') }}"
+docker_unattended_upgrades: true

@@ -1,0 +1,47 @@
+# Ubuntu's own 50unattended-upgrades stays in place and keeps the release and
+# security pockets. This role only adds a file on top of it; APT merges list
+# entries across files. Repositories added by the apt role contribute their
+# own 53-unattended-upgrades-<repo> files the same way.
+- name: Install unattended-upgrades
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: present
+  become: true
+
+# Ubuntu's timers stay as they are: daily, and caught up at boot when the
+# machine was off at the scheduled time.
+- name: Enable the daily apt runs
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+  become: true
+
+# No automatic reboot: on a workstation someone is usually logged in, and
+# GNOME already says when a restart is required.
+- name: Upgrade Ubuntu's -updates pocket too
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/52-unattended-upgrades-local
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      // Additions to Ubuntu's 50unattended-upgrades, managed by plexus.bootstrap.upgrades.
+      Unattended-Upgrade::Origins-Pattern {
+          // Tested non-security fixes for the release.
+          "origin=Ubuntu,archive=${distro_codename}-updates";
+      };
+  become: true
+
+- name: Check that apt accepts the configuration
+  ansible.builtin.command:
+    cmd: apt-config dump Unattended-Upgrade::Origins-Pattern
+  register: upgrades_dump
+  changed_when: false
+  check_mode: false
+  failed_when: "'-updates' not in upgrades_dump.stdout"

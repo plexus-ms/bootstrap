@@ -3,6 +3,31 @@
     file: "repositories/{{ item }}.yml"
   loop: "{{ apt_repositories }}"
 
+# Ubuntu runs unattended-upgrades out of the box, so these files take effect
+# right away, with or without the upgrades role. Matched by site, since some
+# repositories name an unhelpful origin in their Release file.
+- name: Let unattended-upgrades upgrade the added repositories
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/53-unattended-upgrades-{{ item }}
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Unattended-Upgrade::Origins-Pattern {
+          "site={{ apt_repository_sites[item] }}";
+      };
+  loop: "{{ apt_repositories }}"
+  become: true
+  when: apt_unattended_upgrades
+
+- name: Leave the added repositories to manual upgrades
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d/53-unattended-upgrades-{{ item }}
+    state: absent
+  loop: "{{ apt_repositories }}"
+  become: true
+  when: not apt_unattended_upgrades
+
 - name: Install packages
   ansible.builtin.apt:
     name: "{{ apt_packages }}"
